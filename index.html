@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Base Converter</title>
+<style>
+  body { font-family: Arial, sans-serif; max-width: 700px; margin: auto; padding: 20px; background-color: #121212; color: #e0e0e0; }
+  h1 { text-align: center; color: #ffffff; }
+  label { margin-top: 10px; font-weight: bold; display: block; }
+  select, input, button { margin: 5px 0; display: block; width: 100%; padding: 10px; font-size: 16px; border-radius: 6px; border: 1px solid #444; background-color: #1e1e1e; color: #e0e0e0; }
+  button { background-color: #4CAF50; color: white; border: none; cursor: pointer; transition: background-color 0.3s ease; }
+  button:hover { background-color: #45a049; }
+  .result { margin-top: 20px; background: #1e1e1e; padding: 15px; border-radius: 6px; box-shadow: 0 0 10px rgba(0,0,0,0.3); }
+  table { width: 100%; border-collapse: collapse; margin-top: 20px; background: #1e1e1e; border-radius: 6px; overflow: hidden; box-shadow: 0 0 10px rgba(0,0,0,0.3); }
+  th, td { border: 1px solid #333; padding: 8px; text-align: center; }
+  th { background-color: #333; font-weight: bold; }
+  tr:nth-child(even) { background-color: #2a2a2a; }
+  tr:hover { background-color: #3a3a3a; }
+  button.clear { margin-top: 10px; background-color: #f44336; color: white; border: none; padding: 10px; cursor: pointer; border-radius: 6px; font-size: 16px; }
+  button.clear:hover { background-color: #d32f2f; }
+</style>
+</head>
+<body>
+<h1>Base Converter</h1>
+<label for="inputNumber">Enter number:</label>
+<input type="text" id="inputNumber">
+<label for="inputBase">Select input base:</label>
+<select id="inputBase">
+  <option value="2">Binary</option>
+  <option value="8">Octal</option>
+  <option value="10" selected>Decimal</option>
+  <option value="16">Hexadecimal</option>
+</select>
+<button onclick="convert()">Convert</button>
+<div class="result">
+  <p><strong>Binary:</strong> <span id="binResult"></span></p>
+  <p><strong>Octal:</strong> <span id="octResult"></span></p>
+  <p><strong>Decimal:</strong> <span id="decResult"></span></p>
+  <p><strong>Hexadecimal:</strong> <span id="hexResult"></span></p>
+</div>
+<h2>Conversion History (Last 5)</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Input</th>
+      <th>Base</th>
+      <th>Binary</th>
+      <th>Octal</th>
+      <th>Decimal</th>
+      <th>Hexadecimal</th>
+    </tr>
+  </thead>
+  <tbody id="historyTable"></tbody>
+</table>
+<button class="clear" onclick="clearHistory()">Clear History</button>
+<script>
+let history = [];
+function convert() {
+  let numStr = document.getElementById('inputNumber').value.trim();
+  let base = parseInt(document.getElementById('inputBase').value);
+  if (numStr === '') return;
+  let num = parseInt(numStr, base);
+  if (isNaN(num)) {
+    alert('Invalid number for the selected base.');
+    return;
+  }
+  let bin = num.toString(2);
+  let oct = num.toString(8);
+  let dec = num.toString(10);
+  let hex = num.toString(16).toUpperCase();
+  document.getElementById('binResult').textContent = bin;
+  document.getElementById('octResult').textContent = oct;
+  document.getElementById('decResult').textContent = dec;
+  document.getElementById('hexResult').textContent = hex;
+  history.unshift({ input: numStr, base: base, bin: bin, oct: oct, dec: dec, hex: hex });
+  if (history.length > 5) history.pop();
+  renderHistory();
+}
+function renderHistory() {
+  const table = document.getElementById('historyTable');
+  table.innerHTML = '';
+  history.forEach(item => {
+    let row = `<tr>
+      <td>${item.input}</td>
+      <td>${item.base}</td>
+      <td>${item.bin}</td>
+      <td>${item.oct}</td>
+      <td>${item.dec}</td>
+      <td>${item.hex}</td>
+    </tr>`;
+    table.innerHTML += row;
+  });
+}
+function clearHistory() {
+  history = [];
+  renderHistory();
+}
+</script>
+</body>
+</html>
